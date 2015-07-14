@@ -3,7 +3,7 @@ import Future from '../src/main';
 
 let {expect} = chai;
 
-describe('FORK', function() {
+describe('Future', function() {
   it('executes passed function only after a fork has been called', function(done){
     var executed = false;
     var f = new Future(function(reject, resolve) {
@@ -48,5 +48,29 @@ describe('FORK', function() {
               expect(data).to.equal(4);
               done();
             });
+  });
+
+  it('can chain', function(done) {
+    var f = new Future(function(reject, resolve) {
+      resolve(1);
+    });
+
+    var f2 = f.map(x => x + 1)
+              .chain(x => new Future(function(reject, resolve) { resolve(x + 1) }));
+
+    f2.fork(e => {throw new Error('Error');},
+            data => {
+              expect(data).to.equal(3);
+              done();
+            });
+  });
+
+  it('is applicative', function(done) {
+    var f = Future.of(1);
+    f.fork(e => {throw new Error('Error')},
+           data => {
+             expect(data).to.equal(1);
+             done();
+           });
   });
 });

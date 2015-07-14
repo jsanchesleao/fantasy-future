@@ -1,17 +1,24 @@
-var identity = x => x;
+export default class Future {
 
-var comp = (f, g) => x => f(g(x));
+  constructor(action) {
+    this.action = action;
+  }
 
-export default function Future(action, mappingFn = identity) {
-  this.action = action;
-  this.mappingFn = mappingFn;
+  fork(err, succ) {
+    this.action(err, succ);
+  }
+
+  map(fn) {
+    return this.chain(x => Future.of(fn(x)));
+  }
+
+  chain(fn) {
+    return new Future((reject, resolve) => 
+      this.fork(e => reject(e),
+                data => fn(data).fork(reject, resolve)));
+  }
 };
 
-Future.prototype.fork = function(err, succ) {
-  this.action(err, 
-              r => succ(this.mappingFn(r)));
-};
-
-Future.prototype.map = function(fn) {
-  return new Future(this.action, comp(fn, this.mappingFn));
+Future.of = function(x) {
+  return new Future((_, resolve) => resolve(x));
 };
