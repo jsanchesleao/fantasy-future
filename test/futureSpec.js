@@ -73,4 +73,30 @@ describe('Future', function() {
              done();
            });
   });
+
+  it('can join multiple futures into a single one', function(done) {
+    var fs = [Future.of(1), Future.of(2), Future.of(3)];
+
+    var res = Future.all(fs);
+
+    res.fork(e => {throw new Error('Error')},
+             data => {
+               expect(data).to.deep.equal([1, 2, 3]);
+               done();
+             });
+  });
+
+  it('rejects with first failure if calls Future.all and some future fails', function(done) {
+    let rejects = (x, time) => new Future((reject, _) => setTimeout(() => reject(x), time));
+
+    let fs = [Future.of(1), rejects(2, 100), rejects(3, 50)];
+    let res = Future.all(fs);
+
+    res.fork(e => {
+      expect(e).to.deep.equal(3);
+      done();
+    },
+      data => {throw new Error('Should be error')});
+
+  });
 });
