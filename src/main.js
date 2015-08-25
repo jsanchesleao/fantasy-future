@@ -1,1 +1,3 @@
-export * from './future';
+import Future from './future';
+
+export default Future;
