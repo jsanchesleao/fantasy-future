@@ -1,11 +1,11 @@
-# Futuristic
+# Fantasy Future
 
-A Fantasy Land compatible Future Monad implementation
+A [Fantasy Land](https://github.com/fantasyland/fantasy-land) compatible Future Monad implementation.
 
 ## Installation
 
 ```bash
-npm install futuristic
+npm install fantasy-future
 ```
 
 ## What are Futures?
@@ -24,7 +24,7 @@ var result = new Promise(function(reject, resolve) {
 });
 
 /* with futures */
-var Future = require('futuristic');
+var Future = require('fantasy-future');
 var result = new Future(function(reject, resolve) {
   myAwesomeAsyncCalculation(function(data) {
     resolve(data);
@@ -118,5 +118,5 @@ This will trigger the future initial action, and if it rejects, the errorAction 
 License
 -------
 
-Futuristic is released under __ISC__ License. Click [here](http://opensource.org/licenses/ISC) for details.
+Fantasy Future is released under __ISC__ License. Click [here](http://opensource.org/licenses/ISC) for details.
 
